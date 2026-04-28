@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FESTINO - V.I.P. Entry</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #000; color: #fff; text-align: center; padding: 40px 15px; margin: 0; }
+        .box { background: #111; padding: 30px; border-radius: 20px; display: inline-block; width: 100%; max-width: 400px; border: 2px solid #00ff88; box-shadow: 0 0 30px rgba(0,255,136,0.3); box-sizing: border-box; }
+        h2 { color: #00ff88; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 20px; }
+        input, select { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid #333; background: #222; color: #fff; font-size: 16px; box-sizing: border-box; text-align: center; }
+        button { background: #00ff88; color: #000; border: none; padding: 16px; width: 100%; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 18px; margin-top: 15px; text-transform: uppercase; }
+        .nascosto { display: none; }
+        .prezzo-card { background: #1a1a1a; padding: 20px; border-radius: 15px; margin: 20px 0; border: 1px solid #333; }
+        #totaleBig { font-size: 40px; color: #00ff88; font-weight: bold; display: block; }
+        label { display: block; margin-top: 15px; color: #aaa; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <h2>FESTINO</h2>
+
+        <div id="fase1">
+            <p>Codice d'invito:</p>
+            <input type="text" id="codiceSegreto" placeholder="ES: FESTA_XXXX">
+            <button onclick="checkCodice()">ACCEDI</button>
+            <p id="errore" style="color:#ff4444; font-weight: bold;"></p>
+        </div>
+
+        <div id="fase2" class="nascosto">
+            <h3>PRENOTAZIONE</h3>
+            
+            <label>Il tuo nome e cognome:</label>
+            <input type="text" id="nomeCapo" placeholder="Nome Cognome">
+            
+            <label>Quanti amici porti con te?</label>
+            <select id="numAmici" onchange="aggiornaPrezzo()">
+                <option value="0">Nessuno (Vengo solo io)</option>
+                <option value="1">1 Amico</option>
+                <option value="2">2 Amici</option>
+                <option value="3">3 Amici</option>
+                <option value="4">4 Amici</option>
+                <option value="5">5 Amici</option>
+            </select>
+
+            <label>Scrivi i loro nomi:</label>
+            <input type="text" id="nomiAmici" placeholder="Nome degli amici">
+            
+            <div class="prezzo-card">
+                <span>TOTALE DA PAGARE:</span>
+                <span id="totaleBig">15€</span>
+            </div>
+            
+            <button onclick="inviaEInizia()">PAGA E REGISTRATI</button>
+        </div>
+    </div>
+
+    <script>
+        const linkScript = "https://script.google.com/macros/s/AKfycbw2xuHemebYjjIQobbT607gOifc-LbfR2RbcVFWJwoqDTybh1bictTnuFnqsc28A9d1/exec";
+        const emailPayPal = "pascalimattia57@gmail.com";
+        const prezzoSingolo = 15;
+
+        const codiciValidi = ["FESTA_4254", "FESTA_3346", "FESTA_7732", "FESTA_8037", "FESTA_1965", "FESTA_1458", "FESTA_8102", "FESTA_6634", "FESTA_6305", "FESTA_7385", "FESTA_3873", "FESTA_1270", "FESTA_2084", "FESTA_1252", "FESTA_9332", "FESTA_2338", "FESTA_3840", "FESTA_6514", "FESTA_7034", "FESTA_6063", "FESTA_8940", "FESTA_6515", "FESTA_6593", "FESTA_1086", "FESTA_8538", "FESTA_4415", "FESTA_6416", "FESTA_3422", "FESTA_8431", "FESTA_8225", "FESTA_7797", "FESTA_1645", "FESTA_4221", "FESTA_7077", "FESTA_9003", "FESTA_8499", "FESTA_6470", "FESTA_9390", "FESTA_1597", "FESTA_4108", "FESTA_8756", "FESTA_1312", "FESTA_6244", "FESTA_3628", "FESTA_8599", "FESTA_1643", "FESTA_3712", "FESTA_6490", "FESTA_9262", "FESTA_4493", "FESTA_3577", "FESTA_3356", "FESTA_6319", "FESTA_7077", "FESTA_8387", "FESTA_9505", "FESTA_8729", "FESTA_5371", "FESTA_2718", "FESTA_6686", "FESTA_6843", "FESTA_1850", "FESTA_1549", "FESTA_6376", "FESTA_1425", "FESTA_5152", "FESTA_8895", "FESTA_7977", "FESTA_1301", "FESTA_8317", "FESTA_5471", "FESTA_8755", "FESTA_2688", "FESTA_1196", "FESTA_2442", "FESTA_6205", "FESTA_2598", "FESTA_5718", "FESTA_9978", "FESTA_9078", "FESTA_8984", "FESTA_1005", "FESTA_5444", "FESTA_8563", "FESTA_7438", "FESTA_4684", "FESTA_7504", "FESTA_6941", "FESTA_9331", "FESTA_3385", "FESTA_7348", "FESTA_8583", "FESTA_9245", "FESTA_3091", "FESTA_9547", "FESTA_4343", "FESTA_9454", "FESTA_2929", "FESTA_1717", "FESTA_2246", "FESTA_1958", "FESTA_2021", "FESTA_5338", "FESTA_2844", "FESTA_5296", "FESTA_4210", "FESTA_1556", "FESTA_8797", "FESTA_6961", "FESTA_1850", "FESTA_5741", "FESTA_2017", "FESTA_6726", "FESTA_7336", "FESTA_1889", "FESTA_2206", "FESTA_4617", "FESTA_8746", "FESTA_2729", "FESTA_9724", "FESTA_7584", "FESTA_9767", "FESTA_4499", "FESTA_3490", "FESTA_5148", "FESTA_3081", "FESTA_9944", "FESTA_5097", "FESTA_7405", "FESTA_8512", "FESTA_6022", "FESTA_1353", "FESTA_9861", "FESTA_3527", "FESTA_1178", "FESTA_4268", "FESTA_3443", "FESTA_7138", "FESTA_5818", "FESTA_9853", "FESTA_2942", "FESTA_2871", "FESTA_6794", "FESTA_3207", "FESTA_8862", "FESTA_7201", "FESTA_2280", "FESTA_7046", "FESTA_8317", "FESTA_3803", "FESTA_9419", "FESTA_6226", "FESTA_2202", "FESTA_2021", "FESTA_2531", "FESTA_4819", "FESTA_5313", "FESTA_7202", "FESTA_2431", "FESTA_9005", "FESTA_3486", "FESTA_1924", "FESTA_9666", "FESTA_7371", "FESTA_3113", "FESTA_5690", "FESTA_1058", "FESTA_5205", "FESTA_6575", "FESTA_5362", "FESTA_7968", "FESTA_5044", "FESTA_9236", "FESTA_1471", "FESTA_5140", "FESTA_7008", "FESTA_3650", "FESTA_3540", "FESTA_4785", "FESTA_8465", "FESTA_7536", "FESTA_6732", "FESTA_4843", "FESTA_9157", "FESTA_6909", "FESTA_9465", "FESTA_9974", "FESTA_4203", "FESTA_9453", "FESTA_5113", "FESTA_5890", "FESTA_8349", "FESTA_1876", "FESTA_5538", "FESTA_7115", "FESTA_3399", "FESTA_1515", "FESTA_8026", "FESTA_8096", "FESTA_3029", "FESTA_2896", "FESTA_3101", "FESTA_8886", "FESTA_6077", "FESTA_1310", "FESTA_8843", "FESTA_8269", "FESTA_8958", "FESTA_5716", "FESTA_4576", "FESTA_3309", "FESTA_3097", "FESTA_4442", "FESTA_9207", "FESTA_1772", "FESTA_2097", "FESTA_3239", "FESTA_3093", "FESTA_4773", "FESTA_4943", "FESTA_3182", "FESTA_6013", "FESTA_4303", "FESTA_8670", "FESTA_7831", "FESTA_3751", "FESTA_3008", "FESTA_7822", "FESTA_7825", "FESTA_9796", "FESTA_9677", "FESTA_6472", "FESTA_7780", "FESTA_7901", "FESTA_1454", "FESTA_7767", "FESTA_3975", "FESTA_5576", "FESTA_8687", "FESTA_5755", "FESTA_3785", "FESTA_3112", "FESTA_5678", "FESTA_4704", "FESTA_6264", "FESTA_3409", "FESTA_7321", "FESTA_5282", "FESTA_3577"];
+
+        function checkCodice() {
+            const input = document.getElementById('codiceSegreto').value.trim().toUpperCase();
+            if (codiciValidi.includes(input)) {
+                document.getElementById('fase1').style.display = 'none';
+                document.getElementById('fase2').style.display = 'block';
+            } else {
+                document.getElementById('errore').innerText = "CODICE ERRATO!";
+            }
+        }
+
+        function aggiornaPrezzo() {
+            const numeroAmici = parseInt(document.getElementById('numAmici').value);
+            const totale = prezzoSingolo + (numeroAmici * prezzoSingolo);
+            document.getElementById('totaleBig').innerText = totale + "€";
+        }
+
+        function inviaEInizia() {
+            const capo = document.getElementById('nomeCapo').value.trim();
+            const amici = document.getElementById('nomiAmici').value.trim();
+            const numeroAmici = document.getElementById('numAmici').value;
+            const totaleTesto = document.getElementById('totaleBig').innerText.replace('€', '');
+
+            if (capo === "") {
+                alert("Inserisci il tuo nome!");
+                return;
+            }
+
+            // Invia i dati a Google (compreso il numero di amici scelto)
+            fetch(linkScript, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: new URLSearchParams({ 
+                    'capo': capo, 
+                    'amici': amici + " (Tot: " + (parseInt(numeroAmici)+1) + " persone)", 
+                    'totale': totaleTesto 
+                })
+            });
+
+            const descrizione = "FESTINO_" + capo.replace(/\s/g, '_');
+            const urlPayPal = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(emailPayPal)}&item_name=${encodeURIComponent(descrizione)}&amount=${totaleTesto}&currency_code=EUR&no_shipping=1`;
+
+            alert("Dati salvati! Verrai ora portato su PayPal.");
+            window.location.href = urlPayPal;
+        }
+    </script>
+</body>
+</html>
